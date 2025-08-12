@@ -79,6 +79,24 @@
     #results {
       display: none;
       margin-top: 20px;
+      max-height: 300px; /* Maximale Höhe für Scrollbereich */
+      overflow-y: auto; /* Vertikales Scrollen aktivieren */
+      scrollbar-width: thin; /* Für moderne Browser */
+      scrollbar-color: var(--hint-color) transparent; /* Scrollbar-Stil */
+    }
+    
+    /* Scrollbar-Stil für Webkit-Browser (Chrome, Safari) */
+    #results::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    #results::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    #results::-webkit-scrollbar-thumb {
+      background-color: var(--hint-color);
+      border-radius: 3px;
     }
     
     .result-item {
@@ -105,6 +123,9 @@
       .search-box { padding: 5px; }
       input { padding: 10px; font-size: 15px; }
       h2 { font-size: 1.3rem; }
+      #results {
+        max-height: 200px; /* Kleinere Höhe für Mobile */
+      }
     }
   </style>
 </head>
@@ -190,6 +211,7 @@
   </script>
 </body>
 </html>
+
 
 
 

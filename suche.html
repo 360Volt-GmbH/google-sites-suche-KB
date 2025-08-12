@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Dokumentensuche</title>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input { width: 100%; padding: 10px; margin-bottom: 15px; font-size: 16px; }
+    li { margin-bottom: 10px; }
+    a { font-weight: bold; color: #2a5db0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h2>Dokumentensuche</h2>
+  <input id="searchInput" placeholder="Suchbegriff eingeben..." />
+  <ul id="results"></ul>
+
+  <script>
+    // Dokumentenliste
+    const documents = [
+      {
+        title: "[PRD] Knowledge Base",
+        description: "Projektdokumentation und Wissenssammlung",
+        url: "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit?usp=drive_link"
+      }
+    ];
+
+    const fuse = new Fuse(documents, {
+      keys: ['title', 'description'],
+      threshold: 0.3
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    const resultsList = document.getElementById('results');
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value;
+      if (!query) {
+        resultsList.innerHTML = '';
+        return;
+      }
+      const results = fuse.search(query);
+      resultsList.innerHTML = results
+        .map(r => `<li><a href="${r.item.url}" target="_blank">${r.item.title}</a><br><small>${r.item.description}</small></li>`)
+        .join('');
+    });
+  </script>
+</body>
+</html>

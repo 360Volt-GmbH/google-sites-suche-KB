@@ -21,6 +21,7 @@
       font-size: 16px;
       border-radius: 4px;
       border: 1px solid #ccc;
+      margin-bottom: 10px;
     }
     h2, p {
       color: white;
@@ -32,35 +33,54 @@
     #message {
       color: #ff9999;
       display: none;
-      margin-top: 10px;
+      margin: 10px 0;
     }
     .hint {
       color: #aaa;
       font-size: 14px;
     }
+    #document-list {
+      color: #ddd;
+      margin-top: 20px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
   <div class="search-box">
-    <h2>Knowledge Base Suche</h2>
-    <input id="search" placeholder="'Knowledge Base' eingeben..." 
+    <h2>Dokumentensuche</h2>
+    <input id="search" placeholder="Dokumentname eingeben..." 
            onkeyup="handleSearch(event)">
-    <p class="hint">Nur die exakte Eingabe öffnet das Dokument</p>
-    <p id="message">Bitte genau "Knowledge Base" eingeben</p>
+    <p id="message">Dokument nicht gefunden!</p>
+    
+    <div id="document-list">
+      <p><strong>Verfügbare Dokumente:</strong></p>
+      <ul>
+        <li>Knowledge Base</li>
+        <li>Projektplan</li>
+        <li>Handbuch</li>
+      </ul>
+    </div>
+    <p class="hint">Groß-/Kleinschreibung egal, aber exakter Name erforderlich</p>
   </div>
 
   <script>
+    // Einfache Dokumenten-Datenbank - HIER NEUE DOKUMENTE EINTRAGEN
+    const documents = {
+      "knowledge base": "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit",
+      "projektplan": "HIER_GOOGLE_DOCS_LINK_EINFÜGEN",
+      "handbuch": "HIER_GOOGLE_DOCS_LINK_EINFÜGEN"
+    };
+
     function handleSearch(event) {
-      const searchTerm = document.getElementById('search').value.trim().toLowerCase();
-      const message = document.getElementById('message');
-      
       if (event.key === 'Enter') {
-        // Nur bei exakter Übereinstimmung (ohne Berücksichtigung von Groß-/Kleinschreibung)
-        if (searchTerm === "knowledge base") {
-          window.open("https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit");
+        const searchTerm = document.getElementById('search').value.toLowerCase().trim();
+        const message = document.getElementById('message');
+        
+        if (documents[searchTerm]) {
+          window.open(documents[searchTerm]);
         } else {
           message.style.display = 'block';
-          // Nach 3 Sekunden verschwinden lassen
           setTimeout(() => message.style.display = 'none', 3000);
         }
       }
@@ -68,6 +88,7 @@
   </script>
 </body>
 </html>
+
 
 
 

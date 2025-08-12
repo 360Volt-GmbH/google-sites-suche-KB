@@ -28,10 +28,14 @@
   <div class="search-box">
     <h2>Knowledge Base Suche</h2>
     <input id="search" placeholder="Suchbegriff eingeben..." 
-           onkeyup="if(event.key === 'Enter') window.open('https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit#heading=h.'+encodeURIComponent(this.value.toLowerCase()))">
+           onkeyup="if(event.key === 'Enter') {
+             const searchTerm = encodeURIComponent(this.value);
+             window.open(`https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit?hl=de#search=${searchTerm}`);
+           }">
     <p>Drücke Enter um in der Knowledge Base zu suchen</p>
   </div>
 </body>
 </html>
+
 
 

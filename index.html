@@ -3,45 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <title>Dokumentensuche</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #2a2a2a;
+      --text-color: white;
+      --hint-color: #aaaaaa;
+      --error-color: #ff9999;
+      --input-border: #cccccc;
+    }
+    
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
     body {
       font-family: 'Poppins', Arial, sans-serif;
-      padding: 20px;
+      padding: 15px;
       margin: 0;
+      background: var(--bg-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .search-box { 
-      max-width: 600px; 
+    
+    .search-box {
+      width: 100%;
+      max-width: 600px;
       margin: 0 auto;
+      padding: 10px;
     }
-    input { 
-      width: 100%; 
-      padding: 10px; 
+    
+    input {
+      width: 100%;
+      padding: 12px;
       font-size: 16px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--input-border);
+      margin-bottom: 12px;
+      -webkit-appearance: none;
     }
+    
     h2, p {
-      color: white;
+      color: var(--text-color);
       text-align: center;
+      margin: 0 0 12px 0;
     }
+    
     h2 {
-      margin-top: 0;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
     }
+    
     #message {
-      color: #ff9999;
+      color: var(--error-color);
       display: none;
-      margin: 10px 0;
+      margin: 12px 0;
+      font-size: 0.9rem;
     }
+    
     .hint {
-      color: #aaa;
-      font-size: 14px;
+      color: var(--hint-color);
+      font-size: 0.85rem;
+      margin: 8px 0;
     }
-    #document-list {
-      color: #ddd;
-      margin-top: 20px;
-      text-align: left;
+    
+    /* Mobile Optimierungen */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      
+      .search-box {
+        padding: 5px;
+      }
+      
+      input {
+        padding: 10px;
+        font-size: 15px;
+      }
+      
+      h2 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+      }
     }
   </style>
 </head>
@@ -52,10 +99,10 @@
            onkeyup="handleSearch(event)">
     <p class="hint">Drücke Enter, um die Suche zu beginnen</p>
     <p id="message">Dokument nicht gefunden!</p>
-
+  </div>
 
   <script>
-    // Einfache Dokumenten-Datenbank - HIER NEUE DOKUMENTE EINTRAGEN
+    // Dokumenten-Datenbank
     const documents = {
       "knowledge base": "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit",
       "mitarbeiterportal": "https://docs.google.com/document/d/1RywUMZ_azWA6ObyOi9H-pBnbuKRMHOpf-cnAPR4K_tM/edit?usp=drive_link",
@@ -75,9 +122,21 @@
         }
       }
     }
+    
+    // Mobile Viewport Fix
+    function adjustForMobile() {
+      if (window.innerWidth <= 480) {
+        document.querySelector('meta[name="viewport"]')
+          .setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+    }
+    
+    window.addEventListener('resize', adjustForMobile);
+    adjustForMobile();
   </script>
 </body>
 </html>
+
 
 
 

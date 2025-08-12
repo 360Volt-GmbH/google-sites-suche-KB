@@ -29,38 +29,39 @@
     h2 {
       margin-top: 0;
     }
+    #message {
+      color: #ff9999;
+      display: none;
+      margin-top: 10px;
+    }
     .hint {
       color: #aaa;
       font-size: 14px;
-      margin-top: 5px;
     }
   </style>
 </head>
 <body>
   <div class="search-box">
     <h2>Knowledge Base Suche</h2>
-    <input id="search" placeholder="Dokumentnamen eingeben..." 
+    <input id="search" placeholder="'Knowledge Base' eingeben..." 
            onkeyup="handleSearch(event)">
-    <p class="hint">Gib "Knowledge Base" ein um das Dokument zu öffnen</p>
-    <p id="message" style="color:#ff9999;display:none;">Bitte gib den korrekten Dokumentnamen ein</p>
+    <p class="hint">Nur die exakte Eingabe öffnet das Dokument</p>
+    <p id="message">Bitte genau "Knowledge Base" eingeben</p>
   </div>
 
   <script>
-    const DOCUMENT_NAME = "knowledge base"; // Kleinbuchstaben für Vergleich
-    const DOCUMENT_URL = "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit";
-    
     function handleSearch(event) {
+      const searchTerm = document.getElementById('search').value.trim().toLowerCase();
       const message = document.getElementById('message');
-      message.style.display = 'none';
       
       if (event.key === 'Enter') {
-        const searchTerm = document.getElementById('search').value.toLowerCase();
-        
-        // Prüft ob der Suchbegriff im Dokumentnamen vorkommt
-        if (searchTerm.includes("knowledge") || searchTerm.includes("base")) {
-          window.open(DOCUMENT_URL);
+        // Nur bei exakter Übereinstimmung (ohne Berücksichtigung von Groß-/Kleinschreibung)
+        if (searchTerm === "knowledge base") {
+          window.open("https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit");
         } else {
           message.style.display = 'block';
+          // Nach 3 Sekunden verschwinden lassen
+          setTimeout(() => message.style.display = 'none', 3000);
         }
       }
     }

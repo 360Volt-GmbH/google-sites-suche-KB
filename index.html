@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -12,6 +11,7 @@
       --hint-color: #aaaaaa;
       --error-color: #ff9999;
       --input-border: #cccccc;
+      --result-bg: rgba(255,255,255,0.1);
     }
     
     * {
@@ -21,7 +21,7 @@
     
     html, body {
       height: 100%;
-      overflow: hidden; /* Verhindert Scrollbalken */
+      overflow: hidden;
     }
     
     body {
@@ -48,6 +48,8 @@
       border: 1px solid var(--input-border);
       margin-bottom: 12px;
       -webkit-appearance: none;
+      background: var(--result-bg);
+      color: white;
     }
     
     h2, p {
@@ -74,55 +76,102 @@
       margin: 8px 0;
     }
     
-    /* Mobile Optimierungen */
+    #results {
+      display: none;
+      margin-top: 20px;
+    }
+    
+    .result-item {
+      background: var(--result-bg);
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .result-item:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .result-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
     @media (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-      
-      .search-box {
-        padding: 5px;
-      }
-      
-      input {
-        padding: 10px;
-        font-size: 15px;
-      }
-      
-      h2 {
-        font-size: 1.3rem;
-        margin-bottom: 12px;
-      }
+      body { padding: 10px; }
+      .search-box { padding: 5px; }
+      input { padding: 10px; font-size: 15px; }
+      h2 { font-size: 1.3rem; }
     }
   </style>
 </head>
 <body>
   <div class="search-box">
     <h2>Dokumentensuche</h2>
-    <input id="search" placeholder="Dokumentname eingeben..." 
+    <input id="search" placeholder="Suchbegriff eingeben..." 
            onkeyup="handleSearch(event)">
-    <p class="hint">Drücke Enter, um die Suche zu beginnen</p>
-    <p id="message">Dokument nicht gefunden!</p>
+    <p class="hint">Drücke Enter, um die Suche zu starten</p>
+    <p id="message">Keine Dokumente gefunden!</p>
+    
+    <div id="results"></div>
   </div>
 
   <script>
-    // Dokumenten-Datenbank
-    const documents = {
-      "knowledge base": "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit",
-      "mitarbeiterportal": "https://docs.google.com/document/d/1RywUMZ_azWA6ObyOi9H-pBnbuKRMHOpf-cnAPR4K_tM/edit?usp=drive_link",
-      "handbuch": "HIER_GOOGLE_DOCS_LINK_EINFÜGEN"
-    };
+    // Erweiterte Dokumenten-Datenbank
+    const documents = [
+      {
+        title: "Knowledge Base",
+        keywords: ["knowledge base", "wissen", "dokumentation"],
+        url: "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit"
+      },
+      {
+        title: "Mitarbeiterportal",
+        keywords: ["mitarbeiterportal", "portal", "mitarbeiter"],
+        url: "https://docs.google.com/document/d/1RywUMZ_azWA6ObyOi9H-pBnbuKRMHOpf-cnAPR4K_tM/edit?usp=drive_link"
+      },
+      {
+        title: "Mitarbeiterportal Summary",
+        keywords: ["mitarbeiterportal", "summary", "zusammenfassung"],
+        url: "HIER_GOOGLE_DOCS_LINK_EINFÜGEN"
+      },
+      {
+        title: "Handbuch",
+        keywords: ["handbuch", "anleitung"],
+        url: "HIER_GOOGLE_DOCS_LINK_EINFÜGEN"
+      }
+    ];
 
     function handleSearch(event) {
       if (event.key === 'Enter') {
         const searchTerm = document.getElementById('search').value.toLowerCase().trim();
         const message = document.getElementById('message');
+        const resultsContainer = document.getElementById('results');
         
-        if (documents[searchTerm]) {
-          window.open(documents[searchTerm]);
+        // Suche durchführen
+        const results = documents.filter(doc => 
+          doc.title.toLowerCase().includes(searchTerm) || 
+          doc.keywords.some(keyword => keyword.includes(searchTerm))
+        );
+        
+        // Ergebnisse anzeigen
+        if (results.length > 0) {
+          message.style.display = 'none';
+          resultsContainer.innerHTML = '';
+          results.forEach(doc => {
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            item.innerHTML = `
+              <div class="result-title">${doc.title}</div>
+            `;
+            item.addEventListener('click', () => window.open(doc.url));
+            resultsContainer.appendChild(item);
+          });
+          resultsContainer.style.display = 'block';
         } else {
           message.style.display = 'block';
-          setTimeout(() => message.style.display = 'none', 3000);
+          resultsContainer.style.display = 'none';
         }
       }
     }
@@ -140,6 +189,7 @@
   </script>
 </body>
 </html>
+
 
 
 

@@ -21,7 +21,7 @@
     
     html, body {
       height: 100%;
-      overflow: hidden;
+      overflow-x: hidden;
     }
     
     body {
@@ -31,6 +31,7 @@
       background: transparent !important;
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
     }
     
     .search-box {
@@ -79,25 +80,9 @@
     #results {
       display: none;
       margin-top: 20px;
-      max-height: 70vh; /* Dynamische Höhe mit Platzberechnung */
-      overflow-y: auto;
-      padding-right: 10px;
-      margin-bottom: 20px;
+      width: 100%;
+      min-height: auto;
       padding-bottom: 20px;
-    }
-    
-    /* Scrollbar für Webkit-Browser */
-    #results::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    #results::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    
-    #results::-webkit-scrollbar-thumb {
-      background-color: var(--hint-color);
-      border-radius: 4px;
     }
     
     .result-item {
@@ -108,6 +93,9 @@
       cursor: pointer;
       transition: background 0.2s;
       color: white;
+      width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     
     .result-item:hover {
@@ -115,21 +103,33 @@
     }
     
     .result-item:last-child {
-    margin-bottom: 0;
+      margin-bottom: 0;
     }
     
     .result-title {
       font-weight: 600;
       margin-bottom: 5px;
+      line-height: 1.4;
+      white-space: normal;
     }
     
     @media (max-width: 480px) {
-      body { padding: 10px; }
-      .search-box { padding: 5px; }
-      input { padding: 10px; font-size: 15px; }
-      h2 { font-size: 1.3rem; }
-      #results {
-        max-height: 50vh; /* Angepasste Höhe für Mobile */
+      body { 
+        padding: 10px; 
+      }
+      .search-box { 
+        padding: 5px; 
+      }
+      input { 
+        padding: 10px; 
+        font-size: 15px; 
+      }
+      h2 { 
+        font-size: 1.3rem; 
+      }
+      .result-item {
+        padding: 10px;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -216,11 +216,6 @@
             resultsContainer.appendChild(item);
           });
           resultsContainer.style.display = 'block';
-          
-          // Nach dem Rendern der Ergebnisse Scrollposition anpassen
-          setTimeout(() => {
-            resultsContainer.scrollTop = resultsContainer.scrollHeight;
-          }, 10);
         } else {
           message.style.display = 'block';
           resultsContainer.style.display = 'none';
@@ -241,6 +236,7 @@
   </script>
 </body>
 </html>
+
 
 
 

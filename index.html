@@ -1,316 +1,468 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Dokumentensuche</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --text-color: white;
-      --hint-color: #aaaaaa;
-      --error-color: #ff9999;
-      --input-border: #cccccc;
-      --result-bg: rgba(255,255,255,0.1);
-    }
-    
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    html, body {
-      height: 100%;
-      overflow-x: hidden;
-    }
-    
-    body {
-      font-family: 'Poppins', Arial, sans-serif;
-      padding: 15px;
-      margin: 0;
-      background: transparent !important;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-    
-    .search-box {
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 10px;
-    }
-    
-    input {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid var(--input-border);
-      margin-bottom: 12px;
-      -webkit-appearance: none;
-      background: white;
-      color: black;
-    }
-    
-    h2, p {
-      color: var(--text-color);
-      text-align: center;
-      margin: 0 0 12px 0;
-    }
-    
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-    }
-    
-    #message {
-      color: var(--error-color);
-      display: none;
-      margin: 12px 0;
-      font-size: 0.9rem;
-    }
-    
-    .hint {
-      color: var(--hint-color);
-      font-size: 0.85rem;
-      margin: 8px 0;
-    }
-    
-    #results {
-      display: none;
-      margin-top: 20px;
-      width: 100%;
-      min-height: auto;
-      padding-bottom: 20px;
-    }
-    
-    .result-item {
-      background: var(--result-bg);
-      padding: 12px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-      color: white;
-      width: 100%;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-    
-    .result-item:hover {
-      background: rgba(255,255,255,0.2);
-    }
-    
-    .result-item:last-child {
-      margin-bottom: 0;
-    }
-    
-    .result-title {
-      font-weight: 600;
-      margin-bottom: 5px;
-      line-height: 1.4;
-      white-space: normal;
-    }
-    
-    /* Moderne Scrollbar-Styles */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.6);
-      border-radius: 10px;
-      border: none;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(255, 255, 255, 0.8);
-    }
-    
-    /* Firefox Scrollbar */
-    * {
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dokumentensuche</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --text-color: white;
+        --hint-color: #aaaaaa;
+        --error-color: #ff9999;
+        --input-border: #cccccc;
+        --result-bg: rgba(255, 255, 255, 0.1);
+      }
 
-    @media (max-width: 480px) {
-      body { 
-        padding: 10px; 
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
       }
-      .search-box { 
-        padding: 5px; 
+
+      html,
+      body {
+        height: 100%;
+        overflow-x: hidden;
       }
-      input { 
-        padding: 10px; 
-        font-size: 15px; 
+
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        padding: 15px;
+        margin: 0;
+        background: transparent !important;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
       }
-      h2 { 
-        font-size: 1.3rem; 
-      }
-      .result-item {
+
+      .search-box {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
         padding: 10px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid var(--input-border);
+        margin-bottom: 12px;
+        -webkit-appearance: none;
+        background: white;
+        color: black;
+      }
+
+      h2,
+      p {
+        color: var(--text-color);
+        text-align: center;
+        margin: 0 0 12px 0;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      #message {
+        color: var(--error-color);
+        display: none;
+        margin: 12px 0;
         font-size: 0.9rem;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="search-box">
-    <h2>Dokumentensuche</h2>
-    <input id="search" placeholder="Suchbegriff eingeben & Enter drücken..." 
-           onkeyup="handleSearch(event)">
-    <p id="message">Keine Dokumente gefunden!</p>
-    
-    <div id="results"></div>
-  </div>
 
-  <script>
-    // Dokumenten-Datenbank
-    const documents = [
-      {
-        title: "[PRD] Knowledge Base",
-        keywords: ["knowledge base", "wissen", "dokumentation", "prd"],
-        url: "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit"
-      },
-      {
-        title: "[PRD] Mitarbeiterportal",
-        keywords: ["mitarbeiterportal", "portal", "mitarbeiter", "prd"],
-        url: "https://docs.google.com/document/d/1RywUMZ_azWA6ObyOi9H-pBnbuKRMHOpf-cnAPR4K_tM/edit?usp=drive_link"
-      },
-      {
-        title: "Anleitung zur Zeiterfassung mit HERO",
-        keywords: ["hero", "anleitung", "zeiterfassung", "hero"],
-        url: "https://docs.google.com/document/d/1UTyBbdavDias7Om-185dpElcU7iY8u8OdQ-zMl-3v3U/edit?tab=t.0"
-      },
-      {
-        title: "Videoanleitung zur Zeiterfassung mit HERO",
-        keywords: ["hero", "videoanleitung", "zeiterfassung", "hero"],
-        url: "https://drive.google.com/file/d/1UNpcA4xfHj2OUR1GOLksH-fZ7zVF8Yjf/view?usp=drive_link"
-      },
-      {
-        title: "Anleitung zum Ticketmanagement",
-        keywords: ["anleitung", "ticketmanagement"],
-        url: "https://docs.google.com/document/d/1XbqdDzr02ek7ASGSNCd-m3AMIjGywtGLzXlRR-P2Ha8/edit?tab=t.0"
-      },
-      {
-        title: "Anleitung zu Rechnungsrelevanten Änderungen/Rechnungsvorbereitung",
-        keywords: ["anleitung", "rechnungsrelevante änderungen", "rechnungsvorbereitung"],
-        url: "https://docs.google.com/document/d/1lvjA7LSZc6-exG3aI6aMv4rrHUvdTy-dY9NM2O4okIs/edit?tab=t.0"
-      },
-      {
-        title: "Videoanleitung zu Arbeitsberichten",
-        keywords: ["videoanleitung", "arbeitsberichte"],
-        url: "https://drive.google.com/file/d/1OYp-twlYA1xk8jPZrOycxzN9ZaTqLq_k/view?usp=drive_link"
-      },
-      {
-        title: "Videoanleitung zu Projektabschlussberichten",
-        keywords: ["videoanleitung", "projektabschluss", "projektabschlussberichte", "berichte"],
-        url: "https://drive.google.com/file/d/1l4osvBC0ELAkNejXb75wAuF_UKpsp6PI/view?usp=drive_link"
-      },
-      {
-        title: "Anleitung zur Baustellenknigge",
-        keywords: ["anleitung", "baustellenknigge"],
-        url: "https://docs.google.com/document/d/160UIGek0fXBnbxhse5HC8cfoOKbb0vR18zl4r0SZTAU/edit?tab=t.0#heading=h.mfxixx45sml6"
-      },
-      {
-        title: "Verhaltenskodex",
-        keywords: ["verhalten", "verhaltenskodex"],
-        url: "https://drive.google.com/file/d/1DFlYecPIc4F-p6UGDfunfko4FuZs3eB_/view?ts=68aeea7f"
-      },
-      {
-        title: "Corporate Benefits",
-        keywords: ["corporate benefits", "mitarbeiterangebote"],
-        url: "https://drive.google.com/file/d/1ZB6Dgx1nl8fm2t06DIpI4UAH6-A3Z11R/view?ts=68aeea97"
-      },
-      {
-        title: "Anleitung Arbeitszeiterfassung/Arbeitszeitkonto",
-        keywords: ["anleitung", "arbeitszeiterfassung", "arbeitszeitkonto"],
-        url: "https://drive.google.com/file/d/1UnwgH-ZJXW8rI0kN7nSHegmnjC3MybS9/view?ts=68aeeaa9"
-      },
-      {
-        title: "Anleitung zur Informationssicherheit",
-        keywords: ["anleitung", "informationssicherheit", "datenschutz"],
-        url: "https://drive.google.com/file/d/10WLr7wtA2ax-swCjvAUkCIFQBKm0Px8D/view?ts=68b00815"
-      },
-    ];
+      .hint {
+        color: var(--hint-color);
+        font-size: 0.85rem;
+        margin: 8px 0;
+      }
 
-    function handleSearch(event) {
-      if (event.key === 'Enter') {
-        const searchTerm = document.getElementById('search').value.toLowerCase().trim();
-        const message = document.getElementById('message');
-        const resultsContainer = document.getElementById('results');
-        
-        // Suche durchführen
-        const results = documents.filter(doc => 
-          doc.title.toLowerCase().includes(searchTerm) || 
-          doc.keywords.some(keyword => keyword.includes(searchTerm))
-        );
-        
-        // Ergebnisse anzeigen
-        if (results.length > 0) {
-          message.style.display = 'none';
-          resultsContainer.innerHTML = '';
-          results.forEach(doc => {
-            const item = document.createElement('div');
-            item.className = 'result-item';
-            item.innerHTML = `
-              <div class="result-title">${doc.title}</div>
-            `;
-            item.addEventListener('click', () => window.open(doc.url));
-            resultsContainer.appendChild(item);
-          });
-          resultsContainer.style.display = 'block';
-        } else {
-          message.style.display = 'block';
-          resultsContainer.style.display = 'none';
+      #results {
+        display: none;
+        margin-top: 20px;
+        width: 100%;
+        min-height: auto;
+        padding-bottom: 20px;
+      }
+
+      .result-item {
+        background: var(--result-bg);
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+        color: white;
+        width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .result-item:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .result-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .result-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        line-height: 1.4;
+        white-space: normal;
+      }
+
+      /* Moderne Scrollbar-Styles */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.6);
+        border-radius: 10px;
+        border: none;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+
+      /* Firefox Scrollbar */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+        .search-box {
+          padding: 5px;
+        }
+        input {
+          padding: 10px;
+          font-size: 15px;
+        }
+        h2 {
+          font-size: 1.3rem;
+        }
+        .result-item {
+          padding: 10px;
+          font-size: 0.9rem;
         }
       }
-    }
-    
-    // Mobile Viewport Fix
-    function adjustForMobile() {
-      if (window.innerWidth <= 480) {
-        document.querySelector('meta[name="viewport"]')
-          .setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    </style>
+  </head>
+  <body>
+    <div class="search-box">
+      <h2>Dokumentensuche</h2>
+      <input
+        id="search"
+        placeholder="Suchbegriff eingeben & Enter drücken..."
+        onkeyup="handleSearch(event)"
+      />
+      <p id="message">Keine Dokumente gefunden!</p>
+
+      <div id="results"></div>
+    </div>
+
+    <script>
+      // Dokumenten-Datenbank
+      const documents = [
+        {
+          title: "[PRD] Knowledge Base",
+          keywords: [
+            "knowledge base",
+            "wissensdatenbank",
+            "wissen",
+            "dokumentation",
+            "handbuch",
+            "leitfaden",
+            "prd",
+            "information",
+            "hilfe",
+            "support",
+          ],
+          url: "https://docs.google.com/document/d/1iaD3_VcWWofWWAdXARowMgOzEbV_yd20OyoveHqiYvE/edit",
+        },
+        {
+          title: "[PRD] Mitarbeiterportal",
+          keywords: [
+            "mitarbeiterportal",
+            "portal",
+            "mitarbeiter",
+            "prd",
+            "intern",
+            "zugang",
+            "selfservice",
+            "personal",
+            "kommunikation",
+          ],
+          url: "https://docs.google.com/document/d/1RywUMZ_azWA6ObyOi9H-pBnbuKRMHOpf-cnAPR4K_tM/edit?usp=drive_link",
+        },
+        {
+          title: "Anleitung zur Zeiterfassung mit HERO",
+          keywords: [
+            "hero",
+            "anleitung",
+            "zeiterfassung",
+            "arbeitszeit",
+            "zeitmanagement",
+            "dokumentation",
+            "app",
+            "arbeitszeiterfassung",
+            "howto",
+          ],
+          url: "https://docs.google.com/document/d/1UTyBbdavDias7Om-185dpElcU7iY8u8OdQ-zMl-3v3U/edit?tab=t.0",
+        },
+        {
+          title: "Videoanleitung zur Zeiterfassung mit HERO",
+          keywords: [
+            "hero",
+            "videoanleitung",
+            "zeiterfassung",
+            "arbeitszeit",
+            "zeitmanagement",
+            "video",
+            "tutorial",
+            "arbeitszeiterfassung",
+            "app",
+          ],
+          url: "https://drive.google.com/file/d/1UNpcA4xfHj2OUR1GOLksH-fZ7zVF8Yjf/view?usp=drive_link",
+        },
+        {
+          title: "Anleitung zum Ticketmanagement",
+          keywords: [
+            "anleitung",
+            "ticketmanagement",
+            "ticketsystem",
+            "support",
+            "prozess",
+            "hilfe",
+            "störung",
+            "workflow",
+            "bearbeitung",
+          ],
+          url: "https://docs.google.com/document/d/1XbqdDzr02ek7ASGSNCd-m3AMIjGywtGLzXlRR-P2Ha8/edit?tab=t.0",
+        },
+        {
+          title:
+            "Anleitung zu Rechnungsrelevanten Änderungen/Rechnungsvorbereitung",
+          keywords: [
+            "anleitung",
+            "rechnung",
+            "rechnungsänderung",
+            "rechnungsvorbereitung",
+            "abrechnung",
+            "buchhaltung",
+            "prozess",
+            "änderung",
+            "finanzen",
+          ],
+          url: "https://docs.google.com/document/d/1lvjA7LSZc6-exG3aI6aMv4rrHUvdTy-dY9NM2O4okIs/edit?tab=t.0",
+        },
+        {
+          title: "Videoanleitung zu Arbeitsberichten",
+          keywords: [
+            "videoanleitung",
+            "arbeitsberichte",
+            "bericht",
+            "arbeitszeit",
+            "dokumentation",
+            "video",
+            "tutorial",
+            "nachweis",
+          ],
+          url: "https://drive.google.com/file/d/1OYp-twlYA1xk8jPZrOycxzN9ZaTqLq_k/view?usp=drive_link",
+        },
+        {
+          title: "Videoanleitung zu Projektabschlussberichten",
+          keywords: [
+            "videoanleitung",
+            "projektabschluss",
+            "projektabschlussbericht",
+            "projekt",
+            "abschluss",
+            "berichte",
+            "video",
+            "tutorial",
+            "dokumentation",
+          ],
+          url: "https://drive.google.com/file/d/1l4osvBC0ELAkNejXb75wAuF_UKpsp6PI/view?usp=drive_link",
+        },
+        {
+          title: "Anleitung zur Baustellenknigge",
+          keywords: [
+            "anleitung",
+            "baustellenknigge",
+            "baustelle",
+            "verhalten",
+            "umgang",
+            "regeln",
+            "etikette",
+            "arbeitsplatz",
+            "praxis",
+          ],
+          url: "https://docs.google.com/document/d/160UIGek0fXBnbxhse5HC8cfoOKbb0vR18zl4r0SZTAU/edit?tab=t.0#heading=h.mfxixx45sml6",
+        },
+        {
+          title: "Verhaltenskodex",
+          keywords: [
+            "verhalten",
+            "verhaltenskodex",
+            "kodex",
+            "ethik",
+            "regeln",
+            "unternehmen",
+            "richtlinie",
+            "arbeitsplatz",
+            "compliance",
+          ],
+          url: "https://drive.google.com/file/d/1DFlYecPIc4F-p6UGDfunfko4FuZs3eB_/view?ts=68aeea7f",
+        },
+        {
+          title: "Corporate Benefits",
+          keywords: [
+            "corporate benefits",
+            "mitarbeiterangebote",
+            "benefits",
+            "vorteile",
+            "vergünstigungen",
+            "mitarbeiter",
+            "extras",
+            "leistungen",
+          ],
+          url: "https://drive.google.com/file/d/1ZB6Dgx1nl8fm2t06DIpI4UAH6-A3Z11R/view?ts=68aeea97",
+        },
+        {
+          title: "Anleitung Arbeitszeiterfassung/Arbeitszeitkonto",
+          keywords: [
+            "anleitung",
+            "arbeitszeiterfassung",
+            "arbeitszeitkonto",
+            "zeitkonto",
+            "arbeitszeit",
+            "dokumentation",
+            "zeitmanagement",
+            "konto",
+            "howto",
+          ],
+          url: "https://drive.google.com/file/d/1UnwgH-ZJXW8rI0kN7nSHegmnjC3MybS9/view?ts=68aeeaa9",
+        },
+        {
+          title: "Anleitung zur Informationssicherheit",
+          keywords: [
+            "anleitung",
+            "informationssicherheit",
+            "datenschutz",
+            "sicherheit",
+            "it-sicherheit",
+            "schutz",
+            "compliance",
+            "daten",
+            "richtlinie",
+          ],
+          url: "https://drive.google.com/file/d/10WLr7wtA2ax-swCjvAUkCIFQBKm0Px8D/view?ts=68b00815",
+        },
+        {
+          title:
+            "Beschaffungs- und Genehmigungspolicy für Hardware, Software und IT-Zubehör",
+          keywords: [
+            "beschaffung",
+            "genehmigung",
+            "hardware",
+            "software",
+            "it-zubehör",
+            "policy",
+            "richtlinie",
+            "bedarf",
+            "standardisierung",
+            "refurbished",
+            "kostenkontrolle",
+            "prozess",
+            "approval",
+            "rollen",
+            "verantwortung",
+            "budget",
+            "byod",
+            "privatkauf",
+            "inventar",
+            "compliance",
+            "workflow",
+            "antrag",
+            "freigabe",
+            "jira",
+            "finanzierung",
+          ],
+          url: "https://docs.google.com/document/d/1JG8M5TqxBFsb-NPjbVCySPwIkKMihWCjo98f_E8o7NE/edit?usp=sharing",
+        },
+      ];
+
+      function handleSearch(event) {
+        if (event.key === "Enter") {
+          const searchTerm = document
+            .getElementById("search")
+            .value.toLowerCase()
+            .trim();
+          const message = document.getElementById("message");
+          const resultsContainer = document.getElementById("results");
+
+          // Suche durchführen
+          const results = documents.filter(
+            (doc) =>
+              doc.title.toLowerCase().includes(searchTerm) ||
+              doc.keywords.some((keyword) => keyword.includes(searchTerm))
+          );
+
+          // Ergebnisse anzeigen
+          if (results.length > 0) {
+            message.style.display = "none";
+            resultsContainer.innerHTML = "";
+            results.forEach((doc) => {
+              const item = document.createElement("div");
+              item.className = "result-item";
+              item.innerHTML = `
+              <div class="result-title">${doc.title}</div>
+            `;
+              item.addEventListener("click", () => window.open(doc.url));
+              resultsContainer.appendChild(item);
+            });
+            resultsContainer.style.display = "block";
+          } else {
+            message.style.display = "block";
+            resultsContainer.style.display = "none";
+          }
+        }
       }
-    }
-    
-    window.addEventListener('resize', adjustForMobile);
-    adjustForMobile();
-  </script>
-</body>
+
+      // Mobile Viewport Fix
+      function adjustForMobile() {
+        if (window.innerWidth <= 480) {
+          document
+            .querySelector('meta[name="viewport"]')
+            .setAttribute(
+              "content",
+              "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+            );
+        }
+      }
+
+      window.addEventListener("resize", adjustForMobile);
+      adjustForMobile();
+    </script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
